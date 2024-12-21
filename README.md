@@ -55,5 +55,5 @@ Now since all the dependencies have been installed, we are good to run the proje
 python main.py -q "Your query here" #or you can use --query_text in place of -q
 ```
 
-### Conclusion
+## Conclusion
 This project demonstrates a basic RAG-based chatbot using the text from Alice in Wonderland. By leveraging vector-based similarity search and a generative transformer model, it can answer questions from the book with contextually relevant responses.

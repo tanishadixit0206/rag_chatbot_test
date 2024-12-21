@@ -9,11 +9,9 @@ class SentenceTransformerEmbeddings:
         self.model = model
 
     def embed_documents(self, texts):
-        # Batch embedding of document texts
         return self.model.encode(texts, show_progress_bar=True)
 
     def embed_query(self, text):
-        # Embedding a single query
         return self.model.encode(text, show_progress_bar=False)
 
 def save_to_chroma(chunks):

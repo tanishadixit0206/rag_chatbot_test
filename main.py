@@ -28,6 +28,10 @@ def main():
     args = parser.parse_args()
     query_text = args.query_text
 
+    if not query_text:
+        query_text = input("Enter your prompt: ")
+
+    print("Recieved your prompt ! Loading the db and finding matching results....")
     if not os.path.exists(CHROMA_PATH):
         os.makedirs(CHROMA_PATH)
         documents = load_book()
@@ -50,6 +54,7 @@ def main():
         print(f"\nUnable to find matching results for '{query_text}'")
         return
 
+    print("Fetched results ! Framing the answer....\n")
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
     prompt = "".join([doc.page_content for doc, _score in results])
     reply = generate_result(prompt)

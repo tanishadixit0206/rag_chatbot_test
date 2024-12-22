@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  alice_in_wonderland_chatbot:
+    build: .
+    env_file:
+      - .env 
+    entrypoint: ["python", "main.py"]
+    environment:
+      - PYTHONWARNINGS="ignore"

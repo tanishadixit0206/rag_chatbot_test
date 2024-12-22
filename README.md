@@ -51,7 +51,7 @@ python3 -m venv venv #or python -m venv venv
 source venv/bin/activate
 ```
 
-For Wondows:
+For Windows:
 ```bash
 python -m venv venv
 venv\Scripts\activate

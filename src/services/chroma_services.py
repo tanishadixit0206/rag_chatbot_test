@@ -1,7 +1,7 @@
 import os
 import shutil
 from sentence_transformers import SentenceTransformer
-from langchain.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 CHROMA_PATH = "chroma"
 class SentenceTransformerEmbeddings:

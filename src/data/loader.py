@@ -1,4 +1,4 @@
-from langchain.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader
 
 BOOK_PATH = "./docs/alice_in_wonderland.txt"
 

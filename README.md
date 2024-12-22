@@ -25,6 +25,22 @@ First, clone the repository to your local machine:
 git clone https://github.com/baync180705/rag_chatbot.git
 cd rag_chatbot
 ```
+## Running the project using Docker (Recommended Approach)
+You will first have to build the docker image and then run it inside a docker container.
+
+For building the image (This process might take a long time to execute depending on your device specifications):
+```bash
+sudo docker build -t alice_in_wonderland_chatbot .
+```
+
+Now you can simply run the image in interactive mode:
+```bash
+sudo docker run -it alice_in_wonderland_chatbot -q "Your query here" #or you can use --query_text in place of -q
+# You may also run it without the query. As soon as the container runs, you will eventually be prompted to enter it.
+sudo docker run -it alice_in_wonderland_chatbot
+```
+
+## Manual Setup 
 
 ### Create a Virtual Environment
 Next, we create a virtual environment and activate it
@@ -53,6 +69,8 @@ Now since all the dependencies have been installed, we are good to run the proje
 
 ```bash
 python main.py -q "Your query here" #or you can use --query_text in place of -q
+# You may also run it without the query. As soon as the container runs, you will eventually be prompted to enter it.
+sudo docker run -it alice_in_wonderland_chatbot
 ```
 
 ## Conclusion

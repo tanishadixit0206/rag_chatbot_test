@@ -6,21 +6,21 @@ from src.data.loader import load_book
 from src.data.splitter import split_text
 from src.services.chroma_services import save_to_chroma, load_chroma
 from src.models.summarizer import generate_result
+from langchain.embeddings import HuggingFaceEmbeddings
 
 BOOK_PATH = "./docs/alice_in_wonderland.txt"
 CHROMA_PATH = "chroma"
-model_name = "facebook/bart-large-cnn"
-sentense_transformer_model = SentenceTransformer("all-MiniLM-L6-v2")
 
-class SentenceTransformerEmbeddings:
-    def __init__(self, model):
-        self.model = model
+class StellaEmbeddings(HuggingFaceEmbeddings):
+    def __init__(self, model_name="infgrad/stella-base-en-v2", **kwargs):
+        super().__init__(model_name=model_name, **kwargs)
+        self.client = SentenceTransformer(model_name)
 
     def embed_documents(self, texts):
-        return self.model.encode(texts, show_progress_bar=True)
+        return self.client.encode(texts, normalize_embeddings=True).tolist()
 
     def embed_query(self, text):
-        return self.model.encode(text, show_progress_bar=False)
+        return self.client.encode(text, normalize_embeddings=True).tolist()
 
 def main():
     parser = argparse.ArgumentParser()
@@ -37,7 +37,8 @@ def main():
         documents = load_book()
         chunks = split_text(documents)
         save_to_chroma(chunks)
-    embedding_function = SentenceTransformerEmbeddings(sentense_transformer_model)
+
+    embedding_function = StellaEmbeddings()
     db = load_chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
     results = db.similarity_search_with_relevance_scores(query_text, k=3)
@@ -50,13 +51,23 @@ def main():
     if isinstance(first_score, (list, np.ndarray)):
         first_score = first_score.item()
 
-    if first_score < 0.2:
+    if first_score < 0.4:
         print(f"\nUnable to find matching results for '{query_text}'")
         return
 
     print("Fetched results ! Framing the answer....\n")
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-    prompt = "".join([doc.page_content for doc, _score in results])
+
+    prompt = 'On the basis of the given context and relevance score data: \n\n\n'
+
+    for doc, _score in results:
+        prompt = f'{prompt} context: {doc.page_content}\nrelevance score: {_score}\n\n'
+    prompt = f'{prompt}\nAnswer the following question:\n\n{query_text}'
+    context = "".join([doc.page_content for doc, _score in results])
+    prompt = f"Context: {context} \n\n Question: {query_text}\nPlease answer in at least one complete sentense."
+
+    print("The prompt being passed to the Model is: ")
+    print(prompt)
+    print("\n\n\n")
     reply = generate_result(prompt)
     print(reply)
 

@@ -2,3 +2,4 @@ venv/
 chroma/
 __pycache__/
 alice_in_wonderland_chatbot.tar
+faiss.index
